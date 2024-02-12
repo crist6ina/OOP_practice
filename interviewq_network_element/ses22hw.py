@@ -1,11 +1,13 @@
-"""Interview question - ReadEquipment class, allows the reading and processing of network equipment data"""
-import pandas as pd
+"""Interview question - ReadEquipment class, allows the reading and processing
+of network equipment data"""
 import os.path
+import pandas as pd
 
 
 class ReadEquipment:
     """ReadEquipment class
-    Objects of this class may be created based on a .txt file containing specific network equipment data."""
+    Objects of this class may be created based on a .txt file containing
+    specific network equipment data."""
 
     def __init__(self, file: str):
         """ReadEquipment constructor"""
@@ -22,8 +24,8 @@ class ReadEquipment:
             raise FileNotFoundError
 
     def __split_content(self, row: int = None) -> list[list[str]] or str:
-        """Return a list of lists, where each list represents a row and has each word as a separate element.
-        If a specific row was specified, the row as a string will be returned"""
+        """Return a list of lists, where each list represents a row and has each word as a
+        separate element. If a specific row was specified, the row as a string will be returned"""
         row_list = self.readfile().split('\n')
         if row:
             return row_list[row]
@@ -47,22 +49,23 @@ class ReadEquipment:
         df_header = [header.strip() for header in raw_df_header if header.strip()]
 
         # creating dataframe
-        dataframe = pd.DataFrame(config_list, columns=df_header)
-        dataframe = dataframe.set_index('Local Cell ID')
-        return dataframe
+        info_dataframe = pd.DataFrame(config_list, columns=df_header)
+        info_dataframe = info_dataframe.set_index('Local Cell ID')
+        return info_dataframe
 
     def get_column_by_name(self, column: str, local_cell_id: str = '') -> str:
         """Return entire column of dataframe by giving column name as argument.
         A specific row of the column may be returned if local_cell_id index is provided."""
-        dataframe = self.file_content_to_dataframe()
+        info_dataframe = self.file_content_to_dataframe()
         if local_cell_id:
-            if local_cell_id not in dataframe[column]:
+            if local_cell_id not in info_dataframe[column]:
                 raise ValueError('Invalid Local Cell ID.')
-            return f'{column}: id {local_cell_id} -> {dataframe[column][local_cell_id]}'
-        return dataframe[column]
+            return f'{column}: id {local_cell_id} -> {info_dataframe[column][local_cell_id]}'
+        return info_dataframe[column]
 
     def __str__(self):
-        return f'ReadEquipment object [{self.network_element_name}] with status: {self.result_of_operation}'
+        return (f'ReadEquipment object [{self.network_element_name}] '
+                f'with status: {self.result_of_operation}')
 
 
 if __name__ == '__main__':
