@@ -1,0 +1,22 @@
++++    dummy_network_element        2023-09-15 17:33:52 DST
+O&M    #807405324
+%%/*1898407003*/LST CELL:;%%
+RETCODE = 0  Operation succeeded.
+
+Display static parameters of cells
+----------------------------------
+Local Cell ID  Cell Name     Column_2  	    Column_3
+
+1              dummy_cell_1  False          Normal                  
+2              dummy_cell_2  False          Normal                  
+3              dummy_cell_3  False          Normal                  
+5              dummy_cell_4  False          Normal                  
+6              dummy_cell_5  False          Normal                  
+7              dummy_cell_6  False          Normal                  
+13             dummy_cell_7  False          Normal                  
+(Number of results = 7)
+
+---    END
+
+
+
