@@ -1,3 +1,4 @@
+"""FileWriter and FileReader classes"""
 import sys
 import os
 from pathlib import Path
@@ -11,9 +12,9 @@ class FileExtensionError:
     pass
 
 
-class FileWriter:
+class AccessFile:
     def __init__(self, filename: str):
-        """FileWriter constructor"""
+        """AccessFile constructor"""
         self.filename = filename
         if not isinstance(self.filename, str):
             raise FileTypeError
@@ -21,7 +22,42 @@ class FileWriter:
         self.path = self.parent_path + '/' + self.filename
         self.parent = self.parent_path[self.parent_path.rindex('/') + 1::]
 
-    def write_to_file(self, data: str, mode='a'):
+    @property
+    def size(self):
+        """Return file size"""
+        try:
+            return os.path.getsize(self.filename)
+        except FileNotFoundError:
+            print(f'Cannot get size because {self.filename} was not found')
+            sys.exit(2)
+
+
+class FileDeleter(AccessFile):
+    """FileDeleter class"""
+
+    def __init__(self, filename):
+        """FileDeleter constructor"""
+        super().__init__(filename)
+
+    def delete_file(self):
+        """Delete file from directory if it exists."""
+        if os.path.exists(self.path):
+            press = input(f'This action will completely remove {self.filename}. Do you want to proceed?(yes/no) ')
+            if press == 'yes':
+                os.remove(self.path)
+            else:
+                sys.exit(0)
+        else:
+            print(f'{self.filename} does not exist in {self.parent}')
+
+
+class FileWriter(AccessFile):
+    """FileWriter class"""
+    def __init__(self, filename: str):
+        """FileWriter constructor"""
+        super().__init__(filename)
+
+    def _write_to_file(self, data: str, mode='a'):
         """Write data to file"""
         if not isinstance(data, str):
             raise ValueError('Content must be of str type')
@@ -38,36 +74,16 @@ class FileWriter:
             press = input(f'{self.filename} is an existing file in {self.parent} directory. '
                           f'Are you sure you want to overwrite?(yes/append/no) ')
             if press == 'yes':
-                self.write_to_file(content, 'w')
+                self._write_to_file(content, 'w')
             elif press == 'append':
-                self.write_to_file(content, 'a')
+                self._write_to_file(content, 'a')
             else:
                 sys.exit(0)
         elif not os.path.exists(self.path) and mode == 'a':
             print(f'{self.filename} does not exist in {self.parent} directory. New file will be created.')
-            self.write_to_file(content)
+            self._write_to_file(content)
         else:
-            self.write_to_file(content)
-
-    @property
-    def size(self):
-        """Return file size"""
-        try:
-            return os.path.getsize(self.filename)
-        except FileNotFoundError:
-            print(f'Cannot get size because {self.filename} was not found')
-            sys.exit(2)
-
-    def delete_file(self):
-        """Delete file from directory if it exists."""
-        if os.path.exists(self.path):
-            press = input(f'This action will completely remove {self.filename}. Do you want to proceed?(yes/no) ')
-            if press == 'yes':
-                os.remove(self.path)
-            else:
-                sys.exit(0)
-        else:
-            print(f'{self.filename} does not exist in {self.parent}')
+            self._write_to_file(content)
 
     @classmethod
     def from_file(cls, file: str) -> list:
@@ -87,6 +103,7 @@ class FileWriter:
 
 
 class FileReader(FileWriter):
+    """FileReader class"""
     def __init__(self, filename: str):
         """FileReader constructor"""
         super().__init__(filename)
